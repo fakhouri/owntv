@@ -689,7 +689,7 @@ private fun SeriesGrid(
                                     val show = series[index] ?: return@items
                                     StagePoster(
                                         title = show.name,
-                                        rating = show.rating?.takeIf { it > 0 }?.let(::vodRating),
+                                        rating = null,
                                         width = 196.mpx, height = 294.mpx,
                                         progress = seriesProgress[show.id],
                                         onClick = { onOpenAt(index); vm.openSeries(show) },
@@ -803,7 +803,7 @@ private fun SeriesGrid(
                                 val show = series[index] ?: return@items
                                 VodListRow(
                                     title = show.name,
-                                    line = vodLine(show.year, show.rating, null),
+                                    line = vodLine(show.year, null, null),
                                     posterUrl = posterOf(show),
                                     placeholder = OwnTVIcon.SERIES,
                                     progress = seriesProgress[show.id],
@@ -853,7 +853,7 @@ private fun SeriesGrid(
                                 val show = series[index] ?: return@items
                                 StagePoster(
                                     title = show.name,
-                                    rating = show.rating?.takeIf { it > 0 }?.let(::vodRating),
+                                    rating = null,
                                     width = posterW, height = posterW * 1.5f,
                                     compact = true,
                                     progress = seriesProgress[show.id],
@@ -1179,8 +1179,8 @@ private fun buildSeriesDetails(
         ?: s.backdropUrl?.takeIf { it.isNotBlank() }
     val plot = if (tmdbWins) meta?.overview ?: s.plot else s.plot?.takeIf { it.isNotBlank() } ?: meta?.overview
     val year = if (tmdbWins) meta?.year ?: s.year else s.year ?: meta?.year
-    val rating = if (tmdbWins) meta?.rating?.takeIf { it > 0 } ?: s.rating?.takeIf { it > 0 }
-        else s.rating?.takeIf { it > 0 } ?: meta?.rating?.takeIf { it > 0 }
+    // TMDB is the only rating source: the panel's own value is never shown.
+    val rating = meta?.rating?.takeIf { it > 0 }
     val metaLine = listOfNotNull(year?.let { localizedInteger(it, grouping = false) }, rating?.let { stringResource(R.string.content_rating, it) }).joinToString(stringResource(R.string.content_metadata_separator))
     return tv.own.owntv.features.shell.components.MediaDetailsUi(
         title = s.name,
@@ -1940,8 +1940,7 @@ internal fun seriesTitleInfo(
         year = if (tmdbWins) meta?.year ?: series.year else series.year ?: meta?.year,
         genres = jsonStringList(meta?.genresJson),
         runtimeSecs = null,
-        rating = if (tmdbWins) meta?.rating?.takeIf { it > 0 } ?: series.rating?.takeIf { it > 0 }
-            else series.rating?.takeIf { it > 0 } ?: meta?.rating?.takeIf { it > 0 },
+        rating = meta?.rating?.takeIf { it > 0 },
         tags = cinematicQualityBadges(series.qualityRank, series.advertisedCapabilities),
         plot = if (tmdbWins) meta?.overview ?: providerPlot else providerPlot ?: meta?.overview,
         cast = tv.own.owntv.core.metadata.MetadataCast.parse(meta?.castJson),

@@ -152,6 +152,14 @@ class OwnTVApp : Application(), SingletonImageLoader.Factory, androidx.work.Conf
                 GlobalContext.get().get<tv.own.owntv.core.settings.SettingsRepository>().applyStageDefaults()
             }
         }
+        // This build treats TMDB as the single source of truth for titles, posters, plots and ratings:
+        // the IPTV panel's own metadata is only a fallback for fields TMDB lacks, never a winner.
+        appScope.launch {
+            runCatching {
+                GlobalContext.get().get<tv.own.owntv.core.settings.SettingsRepository>()
+                    .setMetadataMode(tv.own.owntv.core.metadata.MetadataMode.TMDB_ONLY)
+            }
+        }
         // Sports: core decides from Auto rebuild whether the stored board is due ("on every app start",
         // or older than the chosen hours). It reads one small file and touches no database.
         appScope.launch {

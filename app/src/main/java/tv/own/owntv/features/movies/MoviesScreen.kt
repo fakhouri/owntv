@@ -618,7 +618,7 @@ fun MoviesScreen(
                                     val done = prog?.let { vm.isMovieCompleted(it) } == true
                                     StagePoster(
                                         title = movie.name,
-                                        rating = movie.rating?.takeIf { it > 0 }?.let(::vodRating),
+                                        rating = null,
                                         width = 196.mpx, height = 294.mpx,
                                         progress = prog?.takeIf { it.durationMs > 0 }?.let { it.positionMs.toFloat() / it.durationMs },
                                         watched = done,
@@ -735,7 +735,7 @@ fun MoviesScreen(
                                 val done = prog?.let { vm.isMovieCompleted(it) } == true
                                 VodListRow(
                                     title = movie.name,
-                                    line = vodLine(movie.year, movie.rating, movie.durationSecs),
+                                    line = vodLine(movie.year, null, movie.durationSecs),
                                     posterUrl = posterOf(movie),
                                     placeholder = OwnTVIcon.MOVIES,
                                     progress = if (done || prog == null || prog.durationMs <= 0) null else prog.positionMs.toFloat() / prog.durationMs,
@@ -787,7 +787,7 @@ fun MoviesScreen(
                                 val done = prog?.let { vm.isMovieCompleted(it) } == true
                                 StagePoster(
                                     title = movie.name,
-                                    rating = movie.rating?.takeIf { it > 0 }?.let(::vodRating),
+                                    rating = null,
                                     width = posterW, height = posterW * 1.5f,
                                     compact = true,
                                     progress = prog?.takeIf { it.durationMs > 0 }?.let { it.positionMs.toFloat() / it.durationMs },
@@ -1151,8 +1151,8 @@ private fun metaLine(movie: MovieEntity, meta: tv.own.owntv.core.database.entity
     val parts = mutableListOf<String>()
     // Precedence flips with the source mode.
     val year = if (tmdbWins) meta?.year ?: movie.year else movie.year ?: meta?.year
-    val rating = if (tmdbWins) meta?.rating?.takeIf { it > 0 } ?: movie.rating?.takeIf { it > 0 }
-        else movie.rating?.takeIf { it > 0 } ?: meta?.rating?.takeIf { it > 0 }
+    // TMDB is the only rating source: the panel's own value is never shown.
+    val rating = meta?.rating?.takeIf { it > 0 }
     year?.let { parts.add(localizedInteger(it, grouping = false)) }
     rating?.let { parts.add(stringResource(R.string.content_rating, it)) }
     movie.durationSecs?.takeIf { it > 0 }?.let { secs ->
@@ -1219,8 +1219,7 @@ internal fun movieTitleInfo(
         year = if (tmdbWins) meta?.year ?: movie.year else movie.year ?: meta?.year,
         genres = jsonList(meta?.genresJson),
         runtimeSecs = movie.durationSecs?.takeIf { it > 0 },
-        rating = if (tmdbWins) meta?.rating?.takeIf { it > 0 } ?: movie.rating?.takeIf { it > 0 }
-            else movie.rating?.takeIf { it > 0 } ?: meta?.rating?.takeIf { it > 0 },
+        rating = meta?.rating?.takeIf { it > 0 },
         tags = cinematicQualityBadges(movie.qualityRank, movie.advertisedCapabilities),
         plot = if (tmdbWins) meta?.overview ?: providerPlot else providerPlot ?: meta?.overview,
         cast = tv.own.owntv.core.metadata.MetadataCast.parse(meta?.castJson),

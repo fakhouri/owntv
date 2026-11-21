@@ -410,7 +410,7 @@ fun SearchScreen(
                         }
                         is Entry.Movie -> SearchRow(
                             title = e.movie.name,
-                            line = vodRowLine(e.movie.year, e.movie.rating, e.movie.categoryId?.let { categoryNames[it] }),
+                            line = vodRowLine(e.movie.year, null, e.movie.categoryId?.let { categoryNames[it] }),
                             tags = emptyList(), mark = marks[e.movie.sourceId],
                             onClick = { goTo(e) },
                             leading = { SmallPoster(e.movie.posterUrl, OwnTVIcon.MOVIES) },
@@ -418,7 +418,7 @@ fun SearchScreen(
                         )
                         is Entry.Series -> SearchRow(
                             title = e.series.name,
-                            line = vodRowLine(e.series.year, e.series.rating, e.series.categoryId?.let { categoryNames[it] }),
+                            line = vodRowLine(e.series.year, null, e.series.categoryId?.let { categoryNames[it] }),
                             tags = emptyList(), mark = marks[e.series.sourceId],
                             onClick = { goTo(e) },
                             leading = { SmallPoster(e.series.posterUrl, OwnTVIcon.SERIES) },

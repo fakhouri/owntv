@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "tv.own.owntv"
+        applicationId = "tv.own.owntv.khalid"
         minSdk = 26
         targetSdk = 36
         // CI injects these from the git tag (see .github/workflows/android.yml) so releases never
@@ -106,7 +106,7 @@ android {
     productFlavors {
         create("standard") {
             dimension = "abi"
-            ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
+            ndk { abiFilters += listOf("armeabi-v7a") }
         }
         create("x86_64") {
             dimension = "abi"
